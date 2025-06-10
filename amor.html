@@ -189,7 +189,7 @@
     function crearCorazon() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
-      heart.style.left = ${Math.random() * 100}%;
+      heart.style.left = `${Math.random() * 100}%`;
       heart.style.setProperty('--random-x', Math.random());
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 6000);
