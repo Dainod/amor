@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Yurany ❤</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #fff0f5;
+      color: #333;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 2.5em;
+      color: #d81b60;
+    }
+
+    #loveText {
+      font-size: 2.2em;
+      margin: 30px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      color: #e91e63;
+    }
+
+    button {
+      padding: 12px 25px;
+      margin: 10px;
+      font-size: 1em;
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #c2185b;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 6s linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% { bottom: -50px; opacity: 0; }
+      50% { opacity: 1; }
+      100% { bottom: 100%; left: calc(100% * var(--random-x)); opacity: 0; }
+    }
+
+    body.dark-mode {
+      background: #2b2b2b;
+      color: #f8f8f8;
+    }
+
+    body.dark-mode #loveText {
+      color: #ff80ab;
+    }
+
+    #mensajeFinal {
+      font-size: 1.8em;
+      color: #e91e63;
+      margin-top: 30px;
+      display: none;
+    }
+
+    #bloqueo {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #bloqueo input {
+      padding: 10px;
+      font-size: 1.1em;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    #bloqueo button {
+      background: #d81b60;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bloqueo">
+    <h2>Ingresa la contraseña para ver tu sorpresa 💌</h2>
+    <input type="password" id="clave" placeholder="Contraseña">
+    <button onclick="verificar()">Entrar</button>
+  </div>
+
+  <h1>Para ti, Yurany ❤</h1>
+  <div id="loveText">Haz clic para comenzar</div>
+
+  <div class="controls">
+    <button onclick="mostrarSiguiente()">Siguiente</button>
+    <button onclick="toggleModo()">🌙 Modo Oscuro/Claro</button>
+  </div>
+
+  <div id="mensajeFinal">Siempre serás el amor de mi vida mi preciosa ❤</div>
+
+  <script>
+    const frases = [
+      "Español: Te amo", "Inglés: I love you", "Francés: Je t'aime", "Alemán: Ich liebe dich",
+      "Italiano: Ti amo", "Portugués: Eu te amo", "Ruso: Я тебя люблю", "Chino: 我爱你",
+      "Japonés: 愛してる", "Coreano: 사랑해", "Árabe: أحبك", "Hindi: मैं तुमसे प्यार करता हूँ",
+      "Turco: Seni seviyorum", "Griego: Σ' αγαπώ", "Hebreo: אני אוהב אותך", "Sueco: Jag älskar dig",
+      "Noruego: Jeg elsker deg", "Finlandés: Rakastan sinua", "Danés: Jeg elsker dig", "Holandés: Ik hou van jou",
+      "Polaco: Kocham cię", "Checo: Miluji tě", "Húngaro: Szeretlek", "Rumano: Te iubesc",
+      "Vietnamita: Anh yêu em", "Tailandés: ฉันรักคุณ", "Indonesio: Aku cinta kamu", "Tagalo: Mahal kita",
+      "Suajili: Nakupenda", "Zulu: Ngiyakuthanda", "Afrikáans: Ek het jou lief", "Ucraniano: Я тебе кохаю",
+      "Eslovaco: Ľúbim ťa", "Croata: Volim te", "Serbio: Волим те", "Búlgaro: Обичам те",
+      "Lituano: Aš tave myliu", "Estonio: Ma armastan sind", "Letón: Es tevi mīlu", "Georgiano: მიყვარხარ",
+      "Persa: دوستت دارم", "Pashto: زه تا سره مینه لرم", "Malayo: Saya cinta padamu",
+      "Bengalí: আমি তোমায় ভালোবাসি", "Tamil: நான் உன்னை 사랑ிக்கிறேன்",
+      "Nepalí: म तिमीलाई माया गर्छु", "Mongol: Би чамд хайртай",
+      "Camboyano: ខ្ញុំស្រឡាញ់អ្នក", "Laosiano: ຂ້ອຍຮັກເຈົ້າ", "Islandés: Ég elska þig",
+      "Esperanto: Mi amas vin"
+    ];
+
+    let indice = 0;
+    const texto = document.getElementById("loveText");
+    const mensajeFinal = document.getElementById("mensajeFinal");
+
+    function mostrarSiguiente() {
+      texto.style.opacity = 0;
+
+      setTimeout(() => {
+        texto.textContent = frases[indice];
+        texto.style.opacity = 1;
+        hablar(frases[indice]);
+        crearCorazon();
+
+        indice++;
+
+        if (indice >= frases.length) {
+          mensajeFinal.style.display = "block";
+        }
+      }, 300);
+    }
+
+    function toggleModo() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    function crearCorazon() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = ${Math.random() * 100}%;
+      heart.style.setProperty('--random-x', Math.random());
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    function hablar(texto) {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(texto.split(":")[1].trim());
+        utter.lang = "auto";
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function verificar() {
+      const clave = document.getElementById("clave").value;
+      if (clave === "01febrero2022") {
+        document.getElementById("bloqueo").style.display = "none";
+      } else {
+        alert("Contraseña incorrecta 😢");
+      }
+    }
+  </script>
+</body>
+</html>
